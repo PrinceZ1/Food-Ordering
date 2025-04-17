@@ -10,6 +10,9 @@ import com.princez1.foodapp.R;
 public class BaseActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseDatabase database;
+
+    public String TAG="uilover";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

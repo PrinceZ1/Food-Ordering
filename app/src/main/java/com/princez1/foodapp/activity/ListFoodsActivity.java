@@ -43,6 +43,7 @@ public class ListFoodsActivity extends BaseActivity {
     }
 
     private void setVariable() {
+
     }
 
     private void inistList() {

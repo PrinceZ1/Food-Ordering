@@ -1,12 +1,14 @@
 package com.princez1.foodapp.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.princez1.foodapp.activity.DetailActivity;
 import com.princez1.foodapp.domain.Foods;
 
 import java.util.ArrayList;
@@ -26,7 +28,11 @@ public class BestFoodsAdapter extends RecyclerView.Adapter<BestFoodsAdapter.view
 
     @Override
     public void onBindViewHolder(@NonNull BestFoodsAdapter.viewholder holder, int position) {
-
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetailActivity.class);
+            intent.putExtra("object", items.get(position));
+            context.startActivity(intent);
+        });
     }
 
     @Override

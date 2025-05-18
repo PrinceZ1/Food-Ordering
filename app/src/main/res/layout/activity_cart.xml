@@ -167,7 +167,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/view2" />
 
                 <TextView
-                    android:id="@+id/texTxt"
+                    android:id="@+id/taxTxt"
                     style="@style/textStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -196,7 +196,7 @@
                     android:layout_marginBottom="8dp"
                     android:text="$-"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/texTxt"
+                    app:layout_constraintEnd_toEndOf="@+id/taxTxt"
                     app:layout_constraintTop_toTopOf="@+id/textView24" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

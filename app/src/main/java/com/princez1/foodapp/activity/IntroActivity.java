@@ -21,22 +21,19 @@ public class IntroActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding=ActivityIntroBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         setVariable();
         getWindow().setStatusBarColor(Color.parseColor("#FFE485"));
     }
 
     private void setVariable() {
-        binding.loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mAuth.getCurrentUser()!=null){
-                    startActivity(new Intent(IntroActivity.this, MainActivity.class));
-                } else {
-                    startActivity(new Intent(IntroActivity.this, LoginActivity.class));
-
-                }
+        binding.loginBtn.setOnClickListener(v -> {
+            if(mAuth.getCurrentUser()!=null){
+                startActivity(new Intent(IntroActivity.this, MainActivity.class));
+            } else {
+                startActivity(new Intent(IntroActivity.this, LoginActivity.class));
             }
+            finish();
         });
-        binding.loginBtn.setOnClickListener(v -> startActivity(new Intent(IntroActivity.this, SignupActivity.class)));
     }
 }

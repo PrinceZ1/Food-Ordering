@@ -15,19 +15,24 @@ public class LoginActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         setVariable();
+        // Nếu có nút "Sign Up" trên màn hình Login
+        binding.signupBtn.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, SignupActivity.class));
+        });
     }
 
     private void setVariable() {
         binding.loginBtn.setOnClickListener(v -> {
-            String email=binding.userEdt.getText().toString();
-            String password=binding.userEdt.getText().toString();
-            if(email.isEmpty() && !password.isEmpty()){
+            String email=binding.userEdt.getText().toString().trim();
+            String password=binding.userEdt.getText().toString().trim();
+            if(!email.isEmpty() && !password.isEmpty()){
                 mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(LoginActivity.this, task -> {
                     if(task.isSuccessful()){
+                        Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        finishAffinity();
                     }else{
                         Toast.makeText(LoginActivity.this, "Authentication failed", Toast.LENGTH_SHORT).show();
-
                     }
                 });
             }else{

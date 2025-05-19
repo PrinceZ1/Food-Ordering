@@ -17,6 +17,9 @@ public class BaseActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
+        mAuth=FirebaseAuth.getInstance();
+        database=FirebaseDatabase.getInstance();
+
         getWindow().setStatusBarColor(getResources().getColor(R.color.white));
     }
 }

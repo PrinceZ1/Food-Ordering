@@ -1,6 +1,7 @@
 package com.princez1.foodapp.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,14 +37,19 @@ public class BestFoodsAdapter extends RecyclerView.Adapter<BestFoodsAdapter.view
     @Override
     public void onBindViewHolder(@NonNull BestFoodsAdapter.viewholder holder, int position) {
         holder.titleTxt.setText(items.get(position).getTitle());
-        holder.starTxt.setText(""+items.get(position).getStar());
+        holder.starTxt.setText("" + items.get(position).getStar());
         holder.timeTxt.setText(items.get(position).getTimeValue()+" min");
-        holder.priceTxt.setText("$"+items.get(position).getPrice());
+        holder.priceTxt.setText("$" + items.get(position).getPrice());
 
         Glide.with(context)
                 .load(items.get(position).getImagePath())
                 .transform(new CenterCrop(), new RoundedCorners(30))
                 .into(holder.pic);
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetailActivity.class);
+            intent.putExtra("object",items.get(position));
+            context.startActivity(intent);
+        });
     }
 
     @Override

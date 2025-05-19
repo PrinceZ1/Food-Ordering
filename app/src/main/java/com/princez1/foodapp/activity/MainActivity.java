@@ -49,6 +49,24 @@ public class MainActivity extends BaseActivity {
         initPrice();
         initBestFood();
         initCategory();
+        setVariable();
+    }
+
+    private void setVariable() {
+        binding.logoutBtn.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        });
+        binding.searchBtn.setOnClickListener(v -> {
+            String text = binding.searchEdt.getText().toString();
+            if(!text.isEmpty()){
+                Intent intent = new Intent(MainActivity.this, ListFoodsActivity.class);
+                intent.putExtra("text", text);
+                intent.putExtra("isSearch", true);
+                startActivity(intent);
+            }
+        });
+        binding.cartBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, CartActivity.class)));
     }
 
     private void initBestFood() {

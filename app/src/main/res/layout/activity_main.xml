@@ -78,7 +78,7 @@
                     android:orientation="horizontal">
 
                     <EditText
-                        android:id="@+id/editTextText"
+                        android:id="@+id/searchEdt"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_margin="4dp"
@@ -89,8 +89,8 @@
                         android:inputType="text"
                         android:padding="8dp"
                         android:textAlignment="center"
-                        android:textColor="@color/blue_grey"
-                        android:textColorHint="@color/blue_grey"
+                        android:textColor="@color/blue_gray"
+                        android:textColorHint="@color/blue_gray"
                         android:textSize="16sp" />
 
                     <ImageView
@@ -213,7 +213,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Today's best Foods"
-                    android:textColor="@color/blue_grey"
+                    android:textColor="@color/blue_gray"
                     android:textSize="22dp"
                     android:textStyle="bold"/>
 
@@ -261,7 +261,7 @@
                 android:layout_weight="1"
                 android:text="Choose Category"
                 android:layout_marginTop="16dp"
-                android:textColor="@color/blue_grey"
+                android:textColor="@color/blue_gray"
                 android:textSize="22dp"
                 android:textStyle="bold" />
 

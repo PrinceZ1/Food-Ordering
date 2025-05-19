@@ -35,7 +35,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="title"
-                android:textColor="@color/blue_grey"
+                android:textColor="@color/blue_gray"
                 android:textStyle="bold"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toStartOf="@id/priceTxt"
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="4"
-                android:textColor="@color/blue_grey"
+                android:textColor="@color/blue_gray"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/titleTxt" />
 

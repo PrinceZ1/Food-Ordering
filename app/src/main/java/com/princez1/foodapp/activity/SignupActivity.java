@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.princez1.foodapp.databinding.ActivitySignupBinding;
 
 public class SignupActivity extends BaseActivity {
+
     ActivitySignupBinding binding;
 
     @Override

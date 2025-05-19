@@ -3,8 +3,8 @@ package com.princez1.foodapp.domain;
 public class Location {
     private int Id;
     private String Loc;
-    public Location(){
 
+    public Location(){
     }
 
     @Override

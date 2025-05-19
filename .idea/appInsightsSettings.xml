@@ -9,9 +9,15 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.princez1.foodapp" />
+<<<<<<< HEAD
                   <option name="mobileSdkAppId" value="1:392170781450:android:a64bd461811971df2618f3" />
                   <option name="projectId" value="food-app-b8974" />
                   <option name="projectNumber" value="392170781450" />
+=======
+                  <option name="mobileSdkAppId" value="1:96360081865:android:144339c3019fa9d75be018" />
+                  <option name="projectId" value="foodapp-61835" />
+                  <option name="projectNumber" value="96360081865" />
+>>>>>>> origin/dashboard
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

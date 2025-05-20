@@ -10,12 +10,16 @@ import com.princez1.foodapp.R;
 public class BaseActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseDatabase database;
+    public String TAG="uilover";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        database = FirebaseDatabase.getInstance();
-        mAuth = FirebaseAuth.getInstance();
+
+        mAuth=FirebaseAuth.getInstance();
+        database=FirebaseDatabase.getInstance();
 
         getWindow().setStatusBarColor(getResources().getColor(R.color.white));
     }

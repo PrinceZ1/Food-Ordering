@@ -73,13 +73,13 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.viewholder> {
         TextView totalEachItem, num;
         public viewholder(@NonNull View itemView){
             super((itemView));
-             title = itemView.findViewById(R.id.titleTxt);
-             pic = itemView.findViewById(R.id.pic);
-             feeEachItem = itemView.findViewById(R.id.feeEachItem);
-             plusItem = itemView.findViewById(R.id.plusCartBtn);
-             minusItem = itemView.findViewById(R.id.minusCartBtn);
-             totalEachItem = itemView.findViewById(R.id.totalEachItem);
-             num = itemView.findViewById(R.id.numberItemTxt);
+            title = itemView.findViewById(R.id.titleTxt);
+            pic = itemView.findViewById(R.id.pic);
+            feeEachItem = itemView.findViewById(R.id.feeEachItem);
+            plusItem = itemView.findViewById(R.id.plusCartBtn);
+            minusItem = itemView.findViewById(R.id.minusCartBtn);
+            totalEachItem = itemView.findViewById(R.id.totalEachItem);
+            num = itemView.findViewById(R.id.numberItemTxt);
 
         }
     }

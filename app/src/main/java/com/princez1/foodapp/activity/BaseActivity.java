@@ -12,6 +12,7 @@ public class BaseActivity extends AppCompatActivity {
     FirebaseDatabase database;
     public String TAG="uilover";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

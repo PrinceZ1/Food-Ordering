@@ -1,32 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AppInsightsSettings">
-    <option name="tabSettings">
-      <map>
-        <entry key="Firebase Crashlytics">
-          <value>
-            <InsightsFilterSettings>
-              <option name="connection">
-                <ConnectionSetting>
-                  <option name="appId" value="com.princez1.foodapp" />
-<<<<<<< HEAD
-                  <option name="mobileSdkAppId" value="1:392170781450:android:a64bd461811971df2618f3" />
-                  <option name="projectId" value="food-app-b8974" />
-                  <option name="projectNumber" value="392170781450" />
-=======
-                  <option name="mobileSdkAppId" value="1:96360081865:android:144339c3019fa9d75be018" />
-                  <option name="projectId" value="foodapp-61835" />
-                  <option name="projectNumber" value="96360081865" />
->>>>>>> origin/dashboard
-                </ConnectionSetting>
-              </option>
-              <option name="signal" value="SIGNAL_UNSPECIFIED" />
-              <option name="timeIntervalDays" value="THIRTY_DAYS" />
-              <option name="visibilityType" value="ALL" />
-            </InsightsFilterSettings>
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
+    <component name="AppInsightsSettings">
+        <option name="tabSettings">
+            <map>
+                <entry key="Firebase Crashlytics">
+                    <value>
+                        <InsightsFilterSettings>
+                            <option name="connection">
+                                <ConnectionSetting>
+                                    <option name="appId" value="com.princez1.foodapp" />
+                                    <option name="mobileSdkAppId" value="1:704633067189:android:2a333a2a5cfc02f92590fc" />
+                                    <option name="projectId" value="project612-foodapp" />
+                                    <option name="projectNumber" value="704633067189" />
+                                </ConnectionSetting>
+                            </option>
+                            <option name="signal" value="SIGNAL_UNSPECIFIED" />
+                            <option name="timeIntervalDays" value="THIRTY_DAYS" />
+                            <option name="visibilityType" value="ALL" />
+                        </InsightsFilterSettings>
+                    </value>
+                </entry>
+            </map>
+        </option>
+    </component>
 </project>

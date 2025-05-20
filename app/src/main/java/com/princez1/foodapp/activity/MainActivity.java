@@ -67,6 +67,16 @@ public class MainActivity extends BaseActivity {
             }
         });
         binding.cartBtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, CartActivity.class)));
+
+        // --- THÊM/SỬA ---: XỬ LÝ SỰ KIỆN CHO NÚT "VIEW ALL" (BtnViewAll) ---
+        binding.BtnViewAll.setOnClickListener(v -> { // BtnViewAll là ID của "VIEW ALL"
+            Intent intent = new Intent(MainActivity.this, ListFoodsActivity.class);
+            intent.putExtra("ViewAll", true); // Cờ để báo ListFoodsActivity hiển thị tất cả
+            intent.putExtra("CategoryName", "Tất cả món ăn"); // Tiêu đề cho ListFoodsActivity
+            startActivity(intent);
+        });
+        // --- KẾT THÚC CODE CHO NÚT "VIEW ALL" ---
+
     }
 
     private void initBestFood() {

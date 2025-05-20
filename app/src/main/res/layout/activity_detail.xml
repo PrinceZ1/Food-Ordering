@@ -8,7 +8,7 @@
     tools:context=".activity.DetailActivity">
 
     <ScrollView
-        android:id="@+id/scrollView2"
+        android:id="@+id/scrollView3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,6 +54,7 @@
                     app:tint="@color/white"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/arrow"
                     tools:srcCompat="@drawable/arrow" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -185,7 +186,6 @@ smothered in rich chili, melted cheddad cheese, and diced onions."
                     android:gravity="center"
                     android:text="-"
                     android:textColor="@color/red"
-                    android:background="@drawable/edittext_background"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -210,7 +210,6 @@ smothered in rich chili, melted cheddad cheese, and diced onions."
                     android:layout_height="28dp"
                     android:layout_marginStart="8dp"
                     android:gravity="center"
-                    android:background="@drawable/edittext_background"
                     android:text="+"
                     android:textColor="@color/red"
                     android:textSize="16sp"
@@ -227,7 +226,7 @@ smothered in rich chili, melted cheddad cheese, and diced onions."
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="75dp"
-        app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
+        app:layout_constraintBottom_toBottomOf="@+id/scrollView3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 

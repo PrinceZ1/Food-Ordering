@@ -1,6 +1,8 @@
 package com.princez1.foodapp.activity;
 
+import android.content.Intent; // Thêm import này
 import android.os.Bundle;
+import android.text.TextUtils; // Thêm import này
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,12 +22,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.princez1.foodapp.adapter.OrderHistoryAdapter;
 import com.princez1.foodapp.databinding.ActivityProfileBinding;
 import com.princez1.foodapp.domain.Order;
-import com.princez1.foodapp.domain.User; // Bạn cần tạo lớp User này
+import com.princez1.foodapp.domain.User;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+// import java.util.regex.Pattern; // Bỏ comment nếu dùng regex phức tạp
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -55,13 +58,11 @@ public class ProfileActivity extends AppCompatActivity {
         currentUser = mAuth.getCurrentUser();
 
         if (currentUser == null) {
-            // Should not happen if profile is accessed after login
             Toast.makeText(this, "Người dùng chưa đăng nhập.", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        // Tham chiếu đến node "Users" và "Orders" trong Firebase
         userRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUser.getUid());
         ordersRef = FirebaseDatabase.getInstance().getReference("Orders").child(currentUser.getUid());
 
@@ -74,14 +75,13 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void setupRecyclerView() {
         orderList = new ArrayList<>();
-        orderHistoryAdapter = new OrderHistoryAdapter(orderList);
+        orderHistoryAdapter = new OrderHistoryAdapter(orderList); // Adapter sẽ được cập nhật ở bước sau
         binding.ordersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.ordersRecyclerView.setAdapter(orderHistoryAdapter);
-        binding.ordersRecyclerView.setNestedScrollingEnabled(false); // To make scroll work smoothly inside NestedScrollView
+        binding.ordersRecyclerView.setNestedScrollingEnabled(false);
     }
 
     private void loadUserProfile() {
-        // Load basic info from FirebaseAuth
         binding.profileEmailEdt.setText(currentUser.getEmail());
         if (currentUser.getDisplayName() != null && !currentUser.getDisplayName().isEmpty()) {
             binding.profileNameEdt.setText(currentUser.getDisplayName());
@@ -89,8 +89,6 @@ public class ProfileActivity extends AppCompatActivity {
             binding.profileNameEdt.setText("Chưa cập nhật");
         }
 
-
-        // Load additional info from Firebase Realtime Database (node "Users")
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -108,7 +106,6 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     }
                 } else {
-                    // User node doesn't exist, perhaps pre-fill with Firebase Auth display name
                     if (currentUser.getDisplayName() != null && !currentUser.getDisplayName().isEmpty()) {
                         binding.profileNameEdt.setText(currentUser.getDisplayName());
                     }
@@ -129,21 +126,66 @@ public class ProfileActivity extends AppCompatActivity {
 
         if (name.isEmpty()) {
             binding.profileNameLayout.setError("Tên không được để trống");
+            binding.profileNameEdt.requestFocus();
             return;
         } else {
             binding.profileNameLayout.setError(null);
         }
-        // Add more validation for phone and address if needed
+
+        // --- BẮT ĐẦU RÀNG BUỘC SỐ ĐIỆN THOẠI ---
+        if (TextUtils.isEmpty(phone)) {
+            binding.profilePhoneLayout.setError("Số điện thoại không được để trống");
+            binding.profilePhoneEdt.requestFocus();
+            return;
+        } else if (!isValidVietnamesePhoneNumber(phone)) {
+            binding.profilePhoneLayout.setError("SĐT không hợp lệ (phải là 10 số, bắt đầu bằng 0)");
+            binding.profilePhoneEdt.requestFocus();
+            return;
+        } else {
+            binding.profilePhoneLayout.setError(null);
+        }
+        // --- KẾT THÚC RÀNG BUỘC SỐ ĐIỆN THOẠI ---
+
+        // (Tùy chọn) Thêm ràng buộc cho địa chỉ nếu cần
+        if (address.isEmpty()) {
+            binding.profileAddressLayout.setError("Địa chỉ không được để trống");
+            binding.profileAddressEdt.requestFocus();
+            return;
+        } else {
+            binding.profileAddressLayout.setError(null);
+        }
+
 
         Map<String, Object> userUpdates = new HashMap<>();
-        userUpdates.put("name", name); // Firebase Auth không có sẵn trường tên riêng, ta lưu trong DB
+        userUpdates.put("name", name);
         userUpdates.put("phone", phone);
         userUpdates.put("address", address);
-        // userUpdates.put("email", currentUser.getEmail()); // Email thường không cho đổi hoặc cần quy trình xác thực riêng
 
         userRef.updateChildren(userUpdates)
-                .addOnSuccessListener(aVoid -> Toast.makeText(ProfileActivity.this, "Cập nhật thông tin thành công!", Toast.LENGTH_SHORT).show())
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(ProfileActivity.this, "Cập nhật thông tin thành công!", Toast.LENGTH_SHORT).show();
+                    // --- BẮT ĐẦU CHUYỂN VỀ MAINACTIVITY ---
+                    Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish(); // Đóng ProfileActivity
+                    // --- KẾT THÚC CHUYỂN VỀ MAINACTIVITY ---
+                })
                 .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Cập nhật thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    // Hàm kiểm tra SĐT Việt Nam
+    private boolean isValidVietnamesePhoneNumber(String phone) {
+        if (phone == null) {
+            return false;
+        }
+        // Kiểm tra xem có phải tất cả là số và dài 10 ký tự, bắt đầu bằng 0
+        return phone.matches("^0\\d{9}$");
+
+        // Nếu muốn dùng regex phức tạp hơn cho các đầu số cụ thể:
+        // String phoneRegex = "^(0)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$";
+        // Pattern pattern = Pattern.compile(phoneRegex);
+        // return pattern.matcher(phone).matches();
     }
 
 
@@ -152,7 +194,7 @@ public class ProfileActivity extends AppCompatActivity {
         binding.noOrdersTxt.setVisibility(View.GONE);
         binding.ordersRecyclerView.setVisibility(View.GONE);
 
-        ordersRef.orderByChild("orderDateTimestamp").addValueEventListener(new ValueEventListener() { // Sắp xếp theo ngày đặt
+        ordersRef.orderByChild("orderDateTimestamp").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 orderList.clear();
@@ -163,8 +205,8 @@ public class ProfileActivity extends AppCompatActivity {
                             orderList.add(order);
                         }
                     }
-                    Collections.reverse(orderList); // Hiển thị đơn mới nhất lên đầu
-                    orderHistoryAdapter.notifyDataSetChanged(); // Sử dụng notifyDataSetChanged hoặc các phương thức tối ưu hơn
+                    Collections.reverse(orderList);
+                    orderHistoryAdapter.notifyDataSetChanged();
                     binding.ordersRecyclerView.setVisibility(View.VISIBLE);
                 } else {
                     binding.noOrdersTxt.setVisibility(View.VISIBLE);
@@ -183,9 +225,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // handle arrow click here
         if (item.getItemId() == android.R.id.home) {
-            finish(); // close this activity and return to preview activity (if any)
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }

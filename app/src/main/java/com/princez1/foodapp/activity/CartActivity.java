@@ -18,6 +18,7 @@ public class CartActivity extends BaseActivity {
     private RecyclerView.Adapter adapter;
     private ManagmentCart managmentCart;
     private double tax;
+    private double totalAmountFromCartScreen; // Biến để lưu tổng tiền cuối cùng từ màn hình giỏ hàng
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -46,6 +47,8 @@ public class CartActivity extends BaseActivity {
         binding.deliveryTxt.setText("$" + delivery);
         binding.totalTxt.setText("$" + total);
 
+        // Lưu lại tổng tiền cuối cùng từ màn hình giỏ hàng
+        totalAmountFromCartScreen = total;
     }
 
     private void setVariable(){
@@ -56,8 +59,10 @@ public class CartActivity extends BaseActivity {
             if (managmentCart.getListCart().isEmpty()) {
                 Toast.makeText(CartActivity.this, "Giỏ hàng của bạn đang trống!", Toast.LENGTH_SHORT).show();
             } else {
-                // Chuyển sang CheckoutActivity
-                startActivity(new Intent(CartActivity.this, CheckoutActivity.class));
+                Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
+                // Truyền tổng tiền cuối cùng (ĐÃ BAO GỒM PHÍ, THUẾ, COUPON (nếu có)) sang CheckoutActivity
+                intent.putExtra("finalOrderAmount", totalAmountFromCartScreen);
+                startActivity(intent);
             }
         });
     }

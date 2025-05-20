@@ -31,6 +31,11 @@ public class ListFoodsActivity extends BaseActivity {
     private String categoryName;
     private String searchText;
     private boolean isSeach;
+    private boolean isFilter = false;
+    private int locationId;
+    private int timeId;
+    private int priceId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,20 +55,37 @@ public class ListFoodsActivity extends BaseActivity {
         ArrayList<Foods> list = new ArrayList<>();
 
         Query query;
-        if(isSeach){
-            query = myRef.orderByChild("Title").startAt(searchText).endAt(searchText+'\uf8ff');
-        }else{
+        if (isSeach) {
+            query = myRef.orderByChild("Title").startAt(searchText).endAt(searchText + '\uf8ff');
+        } else if (isViewAll) {
+            query = myRef.orderByChild("BestFood").equalTo(true); // <-- LẤY MÓN ĂN TỐT NHẤT
+        } else if (isFilter) {
+            query = myRef; // Lấy toàn bộ rồi lọc thủ công
+        }else {
             query = myRef.orderByChild("CategoryId").equalTo(categoryId);
         }
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    for(DataSnapshot issue : snapshot.getChildren()){
-                        list.add(issue.getValue(Foods.class));
+                if (snapshot.exists()) {
+                    if (isFilter) {
+                        for (DataSnapshot issue : snapshot.getChildren()) {
+                            Foods food = issue.getValue(Foods.class);
+                            if (food != null &&
+                                    (locationId == -1 || food.getLocationId() == locationId) &&
+                                    (timeId == -1 || food.getTimeId() == timeId) &&
+                                    (priceId == -1 || food.getPriceId() == priceId)) {
+                                list.add(food);
+                            }
+                        }
+                    } else {
+                        for (DataSnapshot issue : snapshot.getChildren()) {
+                            list.add(issue.getValue(Foods.class));
+                        }
                     }
-                    if(list.size() > 0){
-                        binding.foodListView.setLayoutManager(new GridLayoutManager(ListFoodsActivity.this,2));
+
+                    if (list.size() > 0) {
+                        binding.foodListView.setLayoutManager(new GridLayoutManager(ListFoodsActivity.this, 2));
                         adapterListFood = new FoodListAdapter(list);
                         binding.foodListView.setAdapter(adapterListFood);
                     }
@@ -78,11 +100,18 @@ public class ListFoodsActivity extends BaseActivity {
         });
     }
 
+    private boolean isViewAll = false; // thêm biến cờ
+
     private void getIntentExtra() {
         categoryId = getIntent().getIntExtra("CategoryId", 0);
         categoryName = getIntent().getStringExtra("CategoryName");
         searchText = getIntent().getStringExtra("text");
         isSeach = getIntent().getBooleanExtra("isSearch", false);
+        isViewAll = getIntent().getBooleanExtra("ViewAll", false); // <-- THÊM DÒNG NÀY
+        isFilter = getIntent().getBooleanExtra("filter", false);
+        locationId = getIntent().getIntExtra("LocationId", -1);
+        timeId = getIntent().getIntExtra("TimeId", -1);
+        priceId = getIntent().getIntExtra("PriceId", -1);
 
         binding.titleTxt.setText(categoryName);
         binding.backBtn.setOnClickListener(v -> finish());

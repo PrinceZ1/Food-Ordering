@@ -3,6 +3,7 @@ package com.princez1.foodapp.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import androidx.activity.EdgeToEdge;
@@ -41,6 +42,9 @@ import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity {
     private ActivityMainBinding binding;
+    int selectedLocationId = -1;
+    int selectedTimeId = -1;
+    int selectedPriceId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,11 +74,51 @@ public class MainActivity extends BaseActivity {
         initLocation();
         initTime();
         initPrice();
+
+
         initBestFood();
         initCategory();
         setVariable();
+        binding.locationSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Location selected = (Location) parent.getItemAtPosition(position);
+                selectedLocationId = selected.getId();
+                filterFoods();
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        binding.timeSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Time selected = (Time) parent.getItemAtPosition(position);
+                selectedTimeId = selected.getId();
+                filterFoods();
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        binding.priceSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Price selected = (Price) parent.getItemAtPosition(position);
+                selectedPriceId = selected.getId();
+                filterFoods();
+            }
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        });
     }
 
+    private void filterFoods() {
+        Intent intent = new Intent(MainActivity.this, ListFoodsActivity.class);
+        intent.putExtra("filter", true);
+        intent.putExtra("LocationId", selectedLocationId);
+        intent.putExtra("TimeId", selectedTimeId);
+        intent.putExtra("PriceId", selectedPriceId);
+        intent.putExtra("CategoryName", "Filtered Foods");
+        startActivity(intent);
+    }
     private void loadUserName() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
@@ -188,7 +232,7 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void initLocation()   {
+    private void initLocation() {
         DatabaseReference myRef = database.getReference("Location");
         ArrayList<Location> list = new ArrayList<>();
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -201,15 +245,37 @@ public class MainActivity extends BaseActivity {
                     ArrayAdapter<Location> adapter = new ArrayAdapter<>(MainActivity.this, R.layout.sp_item, list);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     binding.locationSp.setAdapter(adapter);
+
+                    // Thêm xử lý chọn
+                    final boolean[] isFirstSelection = {true};
+                    binding.locationSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            if (isFirstSelection[0]) {
+                                isFirstSelection[0] = false;
+                                return; // Bỏ qua lần chọn đầu
+                            }
+                            Location selected = list.get(position);
+                            Intent intent = new Intent(MainActivity.this, ListFoodsActivity.class);
+                            intent.putExtra("filter", true);
+                            intent.putExtra("CategoryName", "Filtered by Location");
+                            intent.putExtra("LocationId", selected.getId());
+                            intent.putExtra("TimeId", -1);
+                            intent.putExtra("PriceId", -1);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {}
+                    });
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
+
 
     private void initTime() {
         DatabaseReference myRef = database.getReference("Time");
@@ -224,15 +290,36 @@ public class MainActivity extends BaseActivity {
                     ArrayAdapter<Time> adapter = new ArrayAdapter<>(MainActivity.this, R.layout.sp_item, list);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     binding.timeSp.setAdapter(adapter);
+
+                    final boolean[] isFirstSelection = {true};
+                    binding.timeSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            if (isFirstSelection[0]) {
+                                isFirstSelection[0] = false;
+                                return;
+                            }
+                            Time selected = list.get(position);
+                            Intent intent = new Intent(MainActivity.this, ListFoodsActivity.class);
+                            intent.putExtra("filter", true);
+                            intent.putExtra("CategoryName", "Filtered by Time");
+                            intent.putExtra("LocationId", -1);
+                            intent.putExtra("TimeId", selected.getId());
+                            intent.putExtra("PriceId", -1);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {}
+                    });
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
+
 
     private void initPrice() {
         DatabaseReference myRef = database.getReference("Price");
@@ -247,13 +334,34 @@ public class MainActivity extends BaseActivity {
                     ArrayAdapter<Price> adapter = new ArrayAdapter<>(MainActivity.this, R.layout.sp_item, list);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     binding.priceSp.setAdapter(adapter);
+
+                    final boolean[] isFirstSelection = {true};
+                    binding.priceSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            if (isFirstSelection[0]) {
+                                isFirstSelection[0] = false;
+                                return;
+                            }
+                            Price selected = list.get(position);
+                            Intent intent = new Intent(MainActivity.this, ListFoodsActivity.class);
+                            intent.putExtra("filter", true);
+                            intent.putExtra("CategoryName", "Filtered by Price");
+                            intent.putExtra("LocationId", -1);
+                            intent.putExtra("TimeId", -1);
+                            intent.putExtra("PriceId", selected.getId());
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {}
+                    });
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
+
 }

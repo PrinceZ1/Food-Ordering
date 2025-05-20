@@ -132,20 +132,7 @@ public class CartActivity extends BaseActivity {
             }
         }
         return 0.0;
-
-        // THÊM SỰ KIỆN CLICK CHO NÚT CHECKOUT
-        binding.checkOutBtn.setOnClickListener(v -> {
-            if (managmentCart.getListCart().isEmpty()) {
-                Toast.makeText(CartActivity.this, "Giỏ hàng của bạn đang trống!", Toast.LENGTH_SHORT).show();
-            } else {
-                Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
-                // Truyền tổng tiền cuối cùng (ĐÃ BAO GỒM PHÍ, THUẾ, COUPON (nếu có)) sang CheckoutActivity
-                intent.putExtra("finalOrderAmount", totalAmountFromCartScreen);
-                startActivity(intent);
-            }
-        });
     }
-
 
     private void initList(){
         if(managementCart.getListCart().isEmpty()){
@@ -160,5 +147,16 @@ public class CartActivity extends BaseActivity {
         binding.cartView.setLayoutManager(linearLayoutManager);
         adapter = new CartAdapter(managementCart.getListCart(), this, () -> calculateCart());
         binding.cartView.setAdapter(adapter);
+
+        // THÊM SỰ KIỆN CLICK CHO NÚT CHECKOUT
+        binding.checkOutBtn.setOnClickListener(v -> {
+            if (managementCart.getListCart().isEmpty()) {
+                Toast.makeText(CartActivity.this, "Giỏ hàng của bạn đang trống!", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
+                intent.putExtra("finalOrderAmount", totalAmountFromCartScreen);
+                startActivity(intent);
+            }
+        });
     }
 }

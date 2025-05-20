@@ -11,7 +11,7 @@ import com.princez1.foodapp.adapter.CartAdapter;
 import com.princez1.foodapp.databinding.ActivityCartBinding;
 import com.princez1.foodapp.helper.ManagmentCart;
 
-public class CartActivity extends AppCompatActivity {
+public class CartActivity extends BaseActivity {
     private ActivityCartBinding binding;
     private RecyclerView.Adapter adapter;
     private ManagmentCart managmentCart;
@@ -58,7 +58,7 @@ public class CartActivity extends AppCompatActivity {
             binding.scroviewCart.setVisibility(View.VISIBLE);
         }
 
-        LinearLayoutManager linearLayoutManager  = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager linearLayoutManager  = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         binding.cartView.setLayoutManager(linearLayoutManager);
         adapter = new CartAdapter(managmentCart.getListCart(), this, () -> calculateCart());
         binding.cartView.setAdapter(adapter);

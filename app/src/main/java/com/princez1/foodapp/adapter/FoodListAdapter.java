@@ -30,7 +30,7 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.viewho
     @Override
     public FoodListAdapter.viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
-        View inflate = LayoutInflater.from(context).inflate(R.layout.viewholder_list_food,parent,false);
+        View inflate = LayoutInflater.from(context).inflate(R.layout.activity_list_foods,parent,false);
         return new viewholder(inflate);
     }
 
@@ -63,7 +63,7 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.viewho
             priceTxt = itemView.findViewById(R.id.priceTxt);
             rateTxt = itemView.findViewById(R.id.rateTxt);
             timeTxt = itemView.findViewById(R.id.timeTxt);
-            pic = itemView.findViewById(R.id.img);
+            pic = itemView.findViewById(R.id.pic);
         }
     }
 }

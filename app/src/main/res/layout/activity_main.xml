@@ -83,7 +83,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="4dp"
                         android:layout_weight="1"
-                        android:background="@color/gray"
+                        android:background="@color/grey"
                         android:ems="10"
                         android:hint="Search Food..."
                         android:inputType="text"

@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.princez1.foodapp.R;
+import com.princez1.foodapp.activity.DetailActivity;
 import com.princez1.foodapp.domain.Foods;
 
 import java.util.ArrayList;

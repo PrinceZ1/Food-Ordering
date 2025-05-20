@@ -12,15 +12,41 @@ import com.princez1.foodapp.adapter.CartAdapter;
 import com.princez1.foodapp.databinding.ActivityCartBinding;
 import com.princez1.foodapp.helper.ManagmentCart;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class CartActivity extends BaseActivity {
     private ActivityCartBinding binding;
     private RecyclerView.Adapter adapter;
-    private ManagmentCart managmentCart;
+    private ManagmentCart managementCart;
     private double discount = 0.0;
-    
-    // Định nghĩa các coupon với điều kiện
-    private static final double WELCOME10_MIN_ORDER = 20.0; // Đơn hàng tối thiểu $20
-    private static final double SAVE20_MIN_ORDER = 50.0;    // Đơn hàng tối thiểu $50
+    private String appliedCouponCode = null;
+    private static class CouponRule {
+        final String code;
+        final double minOrder;
+        final double percent;
+        final double maxDiscount;
+
+        CouponRule(String code, double minOrder, double percent, double maxDiscount) {
+            this.code = code;
+            this.minOrder = minOrder;
+            this.percent = percent;
+            this.maxDiscount = maxDiscount;
+        }
+
+        double calculateDiscount(double subtotal) {
+            if (subtotal >= minOrder) {
+                double discount = Math.round(subtotal * percent * 100.0) / 100.0;
+                return Math.min(discount, maxDiscount);
+            }
+            return 0.0;
+        }
+    }
+    private static final List<CouponRule> COUPON_RULES = Arrays.asList(
+            new CouponRule("WELCOME10", 20, 0.10, 50),
+            new CouponRule("SAVE20", 50, 0.20, 100),
+            new CouponRule("VIP30", 100, 0.30, 150)
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -28,15 +54,22 @@ public class CartActivity extends BaseActivity {
         binding = ActivityCartBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        managmentCart = new ManagmentCart(this);
+        managementCart = new ManagmentCart(this);
         calculateCart();
         setVariable();
         initList();
     }
 
-    private void calculateCart(){
+    private void calculateCart() {
         double delivery = 10;
-        double subtotal = managmentCart.getTotalFee();
+        double subtotal = managementCart.getTotalFee();
+        double validatedDiscount = appliedCouponCode != null ? getValidatedDiscount(appliedCouponCode, subtotal) : 0.0;
+        if (appliedCouponCode != null && validatedDiscount == 0.0) {
+            Toast.makeText(this, "Coupon đã bị gỡ do không còn hợp lệ!", Toast.LENGTH_SHORT).show();
+            appliedCouponCode = null;
+        }
+        discount = validatedDiscount;
+
         double discountedSubtotal = subtotal - discount;
         if (discountedSubtotal < 0) discountedSubtotal = 0;
         double total = Math.round((discountedSubtotal + delivery) * 100) / 100.0;
@@ -47,51 +80,51 @@ public class CartActivity extends BaseActivity {
         binding.totalTxt.setText("$" + total);
     }
 
-    private void setVariable(){
+    private void setVariable() {
         binding.backBtn.setOnClickListener(v -> finish());
-        
-        binding.applyCouponBtn.setOnClickListener(v -> {
-            String couponCode = binding.couponEdt.getText().toString().trim();
-            if (couponCode.isEmpty()) {
-                Toast.makeText(this, "Please enter coupon code", Toast.LENGTH_SHORT).show();
+        binding.applyCouponBtn.setOnClickListener(v -> handleCouponApplication());
+    }
+
+    private void handleCouponApplication() {
+        String couponCode = binding.couponEdt.getText().toString().trim().toUpperCase();
+        double subtotal = managementCart.getTotalFee();
+        if (appliedCouponCode != null && !appliedCouponCode.equals(couponCode)) {
+            Toast.makeText(this, "Coupon cũ đã bị thay thế bởi coupon mới!", Toast.LENGTH_SHORT).show();
+        }
+
+        appliedCouponCode = null;
+        discount = 0.0;
+
+        for (CouponRule rule : COUPON_RULES) {
+            if (rule.code.equals(couponCode)) {
+                if (subtotal >= rule.minOrder) {
+                    discount = rule.calculateDiscount(subtotal);
+                    appliedCouponCode = couponCode;
+                    Toast.makeText(this, "Áp dụng thành công " + couponCode + "!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Đơn tối thiểu $" + rule.minOrder + " mới dùng được mã này!", Toast.LENGTH_SHORT).show();
+                }
+                calculateCart();
                 return;
             }
-            
-            double currentTotal = managmentCart.getTotalFee();
-            
-            // Kiểm tra coupon code và điều kiện đơn hàng tối thiểu
-            if (couponCode.equals("WELCOME10")) {
-                if (currentTotal < WELCOME10_MIN_ORDER) {
-                    Toast.makeText(this, 
-                        String.format("Order minimum $%.2f required for this coupon", WELCOME10_MIN_ORDER), 
-                        Toast.LENGTH_LONG).show();
-                    discount = 0.0;
-                } else {
-                    discount = Math.round(currentTotal * 0.1 * 100.0) / 100.0; // 10% discount
-                    Toast.makeText(this, "Coupon applied successfully!", Toast.LENGTH_SHORT).show();
+        }
+        Toast.makeText(this, "Mã coupon không hợp lệ!", Toast.LENGTH_SHORT).show();
+        calculateCart();
+    }
+
+    private double getValidatedDiscount(String couponCode, double subtotal) {
+        for (CouponRule rule : COUPON_RULES) {
+            if (rule.code.equals(couponCode)) {
+                if (subtotal >= rule.minOrder) {
+                    return rule.calculateDiscount(subtotal);
                 }
-                calculateCart();
-            } else if (couponCode.equals("SAVE20")) {
-                if (currentTotal < SAVE20_MIN_ORDER) {
-                    Toast.makeText(this, 
-                        String.format("Order minimum $%.2f required for this coupon", SAVE20_MIN_ORDER), 
-                        Toast.LENGTH_LONG).show();
-                    discount = 0.0;
-                } else {
-                    discount = Math.round(currentTotal * 0.2 * 100.0) / 100.0; // 20% discount
-                    Toast.makeText(this, "Coupon applied successfully!", Toast.LENGTH_SHORT).show();
-                }
-                calculateCart();
-            } else {
-                Toast.makeText(this, "Invalid coupon code", Toast.LENGTH_SHORT).show();
-                discount = 0.0;
-                calculateCart();
             }
-        });
+        }
+        return 0.0;
     }
 
     private void initList(){
-        if(managmentCart.getListCart().isEmpty()){
+        if(managementCart.getListCart().isEmpty()){
             binding.emptyTxt.setVisibility(View.VISIBLE);
             binding.scroviewCart.setVisibility(View.GONE);
         }else{
@@ -101,7 +134,7 @@ public class CartActivity extends BaseActivity {
 
         LinearLayoutManager linearLayoutManager  = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         binding.cartView.setLayoutManager(linearLayoutManager);
-        adapter = new CartAdapter(managmentCart.getListCart(), this, () -> calculateCart());
+        adapter = new CartAdapter(managementCart.getListCart(), this, () -> calculateCart());
         binding.cartView.setAdapter(adapter);
     }
 }

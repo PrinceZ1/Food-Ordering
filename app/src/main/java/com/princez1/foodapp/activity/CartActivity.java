@@ -6,6 +6,8 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.content.Intent;
+import android.widget.Toast;
 
 import com.princez1.foodapp.adapter.CartAdapter;
 import com.princez1.foodapp.databinding.ActivityCartBinding;
@@ -24,8 +26,9 @@ public class CartActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         managmentCart = new ManagmentCart(this);
-        calculateCart();
         setVariable();
+        calculateCart();
+
         initList();
     }
 
@@ -47,7 +50,18 @@ public class CartActivity extends BaseActivity {
 
     private void setVariable(){
         binding.backBtn.setOnClickListener(v -> finish());
+
+        // THÊM SỰ KIỆN CLICK CHO NÚT CHECKOUT
+        binding.checkOutBtn.setOnClickListener(v -> {
+            if (managmentCart.getListCart().isEmpty()) {
+                Toast.makeText(CartActivity.this, "Giỏ hàng của bạn đang trống!", Toast.LENGTH_SHORT).show();
+            } else {
+                // Chuyển sang CheckoutActivity
+                startActivity(new Intent(CartActivity.this, CheckoutActivity.class));
+            }
+        });
     }
+
 
     private void initList(){
         if(managmentCart.getListCart().isEmpty()){

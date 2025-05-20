@@ -63,4 +63,11 @@ public class ManagmentCart {
         tinyDB.putListObject("CartList",listItem);
         changeNumberItemsListener.change();
     }
+
+    public void clearCart() {
+        tinyDB.remove("CartList"); // Xóa danh sách giỏ hàng khỏi TinyDB
+        // Nếu bạn có lưu tổng tiền hay số lượng riêng, cũng cần reset ở đây
+        // Ví dụ: tinyDB.putDouble("TotalFee", 0.0);
+        // tinyDB.putInt("CartItemCount", 0);
+    }
 }

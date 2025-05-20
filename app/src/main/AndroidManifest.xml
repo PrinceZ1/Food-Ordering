@@ -30,7 +30,14 @@
         <activity android:name=".activity.LoginActivity" android:exported="false" />
         <activity android:name=".activity.MainActivity" android:exported="false" />
         <activity android:name=".activity.SignupActivity" android:exported="false" />
-
+        <activity
+            android:name=".activity.CheckoutActivity"
+            android:exported="false"
+            android:theme="@style/Theme.FoodApp" />
+        <activity
+            android:name=".activity.ProfileActivity"
+            android:exported="false"
+            android:theme="@style/Theme.FoodApp" />
     </application>
 
 </manifest>

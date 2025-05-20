@@ -1,0 +1,233 @@
+package com.princez1.foodapp.activity;
+
+import android.content.Intent; // Thêm import này
+import android.os.Bundle;
+import android.text.TextUtils; // Thêm import này
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.princez1.foodapp.adapter.OrderHistoryAdapter;
+import com.princez1.foodapp.databinding.ActivityProfileBinding;
+import com.princez1.foodapp.domain.Order;
+import com.princez1.foodapp.domain.User;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+// import java.util.regex.Pattern; // Bỏ comment nếu dùng regex phức tạp
+
+public class ProfileActivity extends AppCompatActivity {
+
+    private ActivityProfileBinding binding;
+    private FirebaseAuth mAuth;
+    private DatabaseReference userRef;
+    private DatabaseReference ordersRef;
+    private FirebaseUser currentUser;
+    private OrderHistoryAdapter orderHistoryAdapter;
+    private ArrayList<Order> orderList;
+
+    private static final String TAG = "ProfileActivity";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityProfileBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        setSupportActionBar(binding.toolbarProfile);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+
+        if (currentUser == null) {
+            Toast.makeText(this, "Người dùng chưa đăng nhập.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        userRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUser.getUid());
+        ordersRef = FirebaseDatabase.getInstance().getReference("Orders").child(currentUser.getUid());
+
+        setupRecyclerView();
+        loadUserProfile();
+        loadOrderHistory();
+
+        binding.updateProfileBtn.setOnClickListener(v -> updateUserProfile());
+    }
+
+    private void setupRecyclerView() {
+        orderList = new ArrayList<>();
+        orderHistoryAdapter = new OrderHistoryAdapter(orderList); // Adapter sẽ được cập nhật ở bước sau
+        binding.ordersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.ordersRecyclerView.setAdapter(orderHistoryAdapter);
+        binding.ordersRecyclerView.setNestedScrollingEnabled(false);
+    }
+
+    private void loadUserProfile() {
+        binding.profileEmailEdt.setText(currentUser.getEmail());
+        if (currentUser.getDisplayName() != null && !currentUser.getDisplayName().isEmpty()) {
+            binding.profileNameEdt.setText(currentUser.getDisplayName());
+        } else {
+            binding.profileNameEdt.setText("Chưa cập nhật");
+        }
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    User user = snapshot.getValue(User.class);
+                    if (user != null) {
+                        if (user.getName() != null && !user.getName().isEmpty()){
+                            binding.profileNameEdt.setText(user.getName());
+                        }
+                        if (user.getPhone() != null) {
+                            binding.profilePhoneEdt.setText(user.getPhone());
+                        }
+                        if (user.getAddress() != null) {
+                            binding.profileAddressEdt.setText(user.getAddress());
+                        }
+                    }
+                } else {
+                    if (currentUser.getDisplayName() != null && !currentUser.getDisplayName().isEmpty()) {
+                        binding.profileNameEdt.setText(currentUser.getDisplayName());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ProfileActivity.this, "Lỗi tải thông tin: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateUserProfile() {
+        String name = binding.profileNameEdt.getText().toString().trim();
+        String phone = binding.profilePhoneEdt.getText().toString().trim();
+        String address = binding.profileAddressEdt.getText().toString().trim();
+
+        if (name.isEmpty()) {
+            binding.profileNameLayout.setError("Tên không được để trống");
+            binding.profileNameEdt.requestFocus();
+            return;
+        } else {
+            binding.profileNameLayout.setError(null);
+        }
+
+        // --- BẮT ĐẦU RÀNG BUỘC SỐ ĐIỆN THOẠI ---
+        if (TextUtils.isEmpty(phone)) {
+            binding.profilePhoneLayout.setError("Số điện thoại không được để trống");
+            binding.profilePhoneEdt.requestFocus();
+            return;
+        } else if (!isValidVietnamesePhoneNumber(phone)) {
+            binding.profilePhoneLayout.setError("SĐT không hợp lệ (phải là 10 số, bắt đầu bằng 0)");
+            binding.profilePhoneEdt.requestFocus();
+            return;
+        } else {
+            binding.profilePhoneLayout.setError(null);
+        }
+        // --- KẾT THÚC RÀNG BUỘC SỐ ĐIỆN THOẠI ---
+
+        // (Tùy chọn) Thêm ràng buộc cho địa chỉ nếu cần
+        if (address.isEmpty()) {
+            binding.profileAddressLayout.setError("Địa chỉ không được để trống");
+            binding.profileAddressEdt.requestFocus();
+            return;
+        } else {
+            binding.profileAddressLayout.setError(null);
+        }
+
+
+        Map<String, Object> userUpdates = new HashMap<>();
+        userUpdates.put("name", name);
+        userUpdates.put("phone", phone);
+        userUpdates.put("address", address);
+
+        userRef.updateChildren(userUpdates)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(ProfileActivity.this, "Cập nhật thông tin thành công!", Toast.LENGTH_SHORT).show();
+                    // --- BẮT ĐẦU CHUYỂN VỀ MAINACTIVITY ---
+                    Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish(); // Đóng ProfileActivity
+                    // --- KẾT THÚC CHUYỂN VỀ MAINACTIVITY ---
+                })
+                .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Cập nhật thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    // Hàm kiểm tra SĐT Việt Nam
+    private boolean isValidVietnamesePhoneNumber(String phone) {
+        if (phone == null) {
+            return false;
+        }
+        // Kiểm tra xem có phải tất cả là số và dài 10 ký tự, bắt đầu bằng 0
+        return phone.matches("^0\\d{9}$");
+
+        // Nếu muốn dùng regex phức tạp hơn cho các đầu số cụ thể:
+        // String phoneRegex = "^(0)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$";
+        // Pattern pattern = Pattern.compile(phoneRegex);
+        // return pattern.matcher(phone).matches();
+    }
+
+
+    private void loadOrderHistory() {
+        binding.progressBarOrders.setVisibility(View.VISIBLE);
+        binding.noOrdersTxt.setVisibility(View.GONE);
+        binding.ordersRecyclerView.setVisibility(View.GONE);
+
+        ordersRef.orderByChild("orderDateTimestamp").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                orderList.clear();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Order order = snapshot.getValue(Order.class);
+                        if (order != null) {
+                            orderList.add(order);
+                        }
+                    }
+                    Collections.reverse(orderList);
+                    orderHistoryAdapter.notifyDataSetChanged();
+                    binding.ordersRecyclerView.setVisibility(View.VISIBLE);
+                } else {
+                    binding.noOrdersTxt.setVisibility(View.VISIBLE);
+                }
+                binding.progressBarOrders.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                binding.progressBarOrders.setVisibility(View.GONE);
+                Toast.makeText(ProfileActivity.this, "Lỗi tải lịch sử đơn hàng: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "loadOrderHistory:onCancelled", databaseError.toException());
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+}

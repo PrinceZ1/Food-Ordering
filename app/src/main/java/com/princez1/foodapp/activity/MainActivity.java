@@ -18,9 +18,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.Firebase;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.princez1.foodapp.R;
@@ -32,6 +34,8 @@ import com.princez1.foodapp.domain.Foods;
 import com.princez1.foodapp.domain.Location;
 import com.princez1.foodapp.domain.Price;
 import com.princez1.foodapp.domain.Time;
+import android.content.Intent; // Nếu chưa có
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -43,6 +47,25 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        mAuth = FirebaseAuth.getInstance(); // Khởi tạo FirebaseAuth
+
+        // ... (code hiện có của bạn để load user name, categories, foods)
+        loadUserName(); // Gọi hàm load user name
+
+        // THÊM SỰ KIỆN CLICK CHO userNameTxt
+        binding.userNameTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseUser currentUser = mAuth.getCurrentUser();
+                if (currentUser != null) {
+                    startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                } else {
+                    // Nếu người dùng chưa đăng nhập, có thể chuyển đến LoginActivity
+                    Toast.makeText(MainActivity.this, "Vui lòng đăng nhập để xem thông tin.", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                }
+            }
+        });
 
         initLocation();
         initTime();
@@ -52,6 +75,37 @@ public class MainActivity extends BaseActivity {
         setVariable();
     }
 
+    private void loadUserName() {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            String displayName = currentUser.getDisplayName();
+            if (displayName != null && !displayName.isEmpty()) {
+                binding.userNameTxt.setText(displayName);
+            } else if (currentUser.getEmail() != null) {
+                // Nếu không có DisplayName, thử lấy phần trước @ của email
+                String email = currentUser.getEmail();
+                binding.userNameTxt.setText(email.split("@")[0]);
+            } else {
+                binding.userNameTxt.setText("User"); // Tên mặc định
+            }
+            // Lấy tên chi tiết hơn từ Realtime Database nếu cần
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUser.getUid());
+            userRef.child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists() && snapshot.getValue(String.class) != null && !snapshot.getValue(String.class).isEmpty()){
+                        binding.userNameTxt.setText(snapshot.getValue(String.class));
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) { }
+            });
+
+        } else {
+            binding.userNameTxt.setText("Khách"); // Hoặc một giá trị nào đó cho người dùng chưa đăng nhập
+            // Có thể ẩn hoặc thay đổi hành vi của userNameTxt nếu chưa đăng nhập
+        }
+    }
     private void setVariable() {
         binding.logoutBtn.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
@@ -74,6 +128,7 @@ public class MainActivity extends BaseActivity {
             intent.putExtra("CategoryName", "Today's best Foods");
             startActivity(intent);
         });
+
 
     }
 

@@ -16,7 +16,7 @@ import com.princez1.foodapp.databinding.ActivityCheckoutBinding;
 import com.princez1.foodapp.helper.ManagmentCart;
 import com.princez1.foodapp.domain.Foods; // Nếu chưa có
 import com.princez1.foodapp.domain.Order; // Import lớp Order vừa tạo
-
+import com.princez1.foodapp.activity.CartActivity;
 import java.util.ArrayList; // Nếu chưa có
 import java.util.UUID; // Để tạo ID đơn hàng ngẫu nhiên
 
@@ -25,6 +25,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private ActivityCheckoutBinding binding;
     private ManagmentCart managmentCart;
     private FirebaseAuth mAuth;
+    private double tax;
 
     private DatabaseReference ordersRef; // Thêm dòng này
 
@@ -62,7 +63,12 @@ public class CheckoutActivity extends AppCompatActivity {
                         String email = binding.emailEdt.getText().toString().trim();
                         String note = binding.noteEdt.getText().toString().trim();
                         ArrayList<Foods> cartItems = managmentCart.getListCart();
-                        double totalAmount = managmentCart.getTotalFee(); // Giả sử bạn có phương thức này hoặc tính lại
+                        double percentTax = 0.02;
+                        double delivery = 10;
+
+                        tax = Math.round(managmentCart.getTotalFee() * percentTax * 100.0) /100;
+                        double totalAmount = Math.round((managmentCart.getTotalFee() + tax + delivery) * 100) / 100;
+
                         long orderDateTimestamp = System.currentTimeMillis();
                         String status = "Pending"; // Trạng thái ban đầu của đơn hàng
 

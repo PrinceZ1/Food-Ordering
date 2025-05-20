@@ -8,7 +8,7 @@
     tools:context=".activity.DetailActivity">
 
     <ScrollView
-        android:id="@+id/scrollView3"
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -118,7 +118,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    android:id="@+id/imageView8"
+                    android:id="@+id/imageView13"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/time"
@@ -133,13 +133,13 @@
                     android:layout_height="wrap_content"
                     android:text="15 min"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/imageView8"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView13"
                     app:layout_constraintStart_toEndOf="@+id/rateTxt"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/textView18"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -165,7 +165,7 @@ smothered in rich chili, melted cheddad cheese, and diced onions."
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/textView20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -185,10 +185,11 @@ smothered in rich chili, melted cheddad cheese, and diced onions."
                     android:gravity="center"
                     android:text="-"
                     android:textColor="@color/red"
+                    android:background="@drawable/edittext_background"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/textView3"
+                    app:layout_constraintStart_toEndOf="@+id/textView20"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
@@ -209,6 +210,7 @@ smothered in rich chili, melted cheddad cheese, and diced onions."
                     android:layout_height="28dp"
                     android:layout_marginStart="8dp"
                     android:gravity="center"
+                    android:background="@drawable/edittext_background"
                     android:text="+"
                     android:textColor="@color/red"
                     android:textSize="16sp"
@@ -225,7 +227,7 @@ smothered in rich chili, melted cheddad cheese, and diced onions."
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="75dp"
-        app:layout_constraintBottom_toBottomOf="@+id/scrollView3"
+        app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -246,7 +248,7 @@ smothered in rich chili, melted cheddad cheese, and diced onions."
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/textView24"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -264,8 +266,8 @@ smothered in rich chili, melted cheddad cheese, and diced onions."
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/addBtn"
-            app:layout_constraintStart_toStartOf="@+id/textView4"
-            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+            app:layout_constraintStart_toStartOf="@+id/textView24"
+            app:layout_constraintTop_toBottomOf="@+id/textView24" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,30 +8,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="8dp" android:layout_marginBottom="8dp" android:orientation="vertical"
+        android:gravity="center_horizontal" app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/imgCat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/cat_0_background"
-            android:padding="12dp"
-            tools:srcCompat="@drawable/btn_1" />
-
+            android:layout_width="70dp"  android:layout_height="70dp" android:scaleType="centerInside" android:padding="8dp" tools:srcCompat="@drawable/btn_1" />
         <TextView
             android:id="@+id/catNameTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="title"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="4dp" android:text="title"
             android:textAlignment="center"
             android:textColor="@color/blue_gray"
-            android:textSize="18sp" />
-    </LinearLayout>
+            android:textSize="14sp" /> </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

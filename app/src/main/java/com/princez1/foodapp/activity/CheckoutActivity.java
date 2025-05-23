@@ -37,7 +37,6 @@ public class CheckoutActivity extends AppCompatActivity {
 
         managmentCart = new ManagmentCart(this);
         mAuth = FirebaseAuth.getInstance();
-        // Khởi tạo DatabaseReference cho node "Orders"
         ordersRef = FirebaseDatabase.getInstance().getReference("Orders");
 
 
@@ -50,10 +49,10 @@ public class CheckoutActivity extends AppCompatActivity {
                     FirebaseUser currentUser = mAuth.getCurrentUser();
                     if (currentUser != null) {
                         String userId = currentUser.getUid();
-                        String orderId = ordersRef.child(userId).push().getKey(); // Tạo orderId duy nhất
+                        String orderId = ordersRef.child(userId).push().getKey();
 
                         if (orderId == null) {
-                            Toast.makeText(CheckoutActivity.this, "Không thể tạo đơn hàng, vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CheckoutActivity.this, "Cannot create order, please try again.", Toast.LENGTH_SHORT).show();
                             return;
                         }
 
@@ -70,15 +69,14 @@ public class CheckoutActivity extends AppCompatActivity {
                         double totalAmount = Math.round((managmentCart.getTotalFee() + tax + delivery) * 100) / 100;
 
                         long orderDateTimestamp = System.currentTimeMillis();
-                        String status = "Pending"; // Trạng thái ban đầu của đơn hàng
+                        String status = "Pending";
 
                         Order newOrder = new Order(orderId, userId, name, address, phone, email, note, cartItems, totalAmount, orderDateTimestamp, status);
 
-                        // Lưu đơn hàng vào Firebase Realtime Database
                         ordersRef.child(userId).child(orderId).setValue(newOrder)
                                 .addOnSuccessListener(aVoid -> {
-                                    Toast.makeText(CheckoutActivity.this, "Đặt hàng thành công!", Toast.LENGTH_LONG).show();
-                                    managmentCart.clearCart(); // Xóa giỏ hàng
+                                    Toast.makeText(CheckoutActivity.this, "Order placed successfully!", Toast.LENGTH_LONG).show();
+                                    managmentCart.clearCart();
 
                                     Intent intent = new Intent(CheckoutActivity.this, MainActivity.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -86,11 +84,10 @@ public class CheckoutActivity extends AppCompatActivity {
                                     finish();
                                 })
                                 .addOnFailureListener(e -> {
-                                    Toast.makeText(CheckoutActivity.this, "Đặt hàng thất bại: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(CheckoutActivity.this, "Order failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
                                 });
                     } else {
-                        Toast.makeText(CheckoutActivity.this, "Bạn cần đăng nhập để đặt hàng.", Toast.LENGTH_SHORT).show();
-                        // Có thể chuyển người dùng đến LoginActivity
+                        Toast.makeText(CheckoutActivity.this, "You need to log in to place an order.", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -100,14 +97,12 @@ public class CheckoutActivity extends AppCompatActivity {
     private void loadUserProfile() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            // Tự động điền tên và email nếu người dùng đã đăng nhập
             if (currentUser.getDisplayName() != null && !currentUser.getDisplayName().isEmpty()) {
                 binding.nameEdt.setText(currentUser.getDisplayName());
             }
             if (currentUser.getEmail() != null && !currentUser.getEmail().isEmpty()) {
                 binding.emailEdt.setText(currentUser.getEmail());
             }
-            // Bạn có thể lấy SĐT và địa chỉ từ Firebase Realtime Database/Firestore nếu đã lưu trước đó
         }
     }
 
@@ -115,10 +110,9 @@ public class CheckoutActivity extends AppCompatActivity {
         String name = binding.nameEdt.getText().toString().trim();
         String address = binding.addressEdt.getText().toString().trim();
         String phone = binding.phoneEdt.getText().toString().trim();
-        // String email = binding.emailEdt.getText().toString().trim(); // Email là tùy chọn
 
         if (TextUtils.isEmpty(name)) {
-            binding.nameLayout.setError("Vui lòng nhập họ tên");
+            binding.nameLayout.setError("Please enter your full name");
             binding.nameEdt.requestFocus();
             return false;
         } else {
@@ -126,7 +120,7 @@ public class CheckoutActivity extends AppCompatActivity {
         }
 
         if (TextUtils.isEmpty(address)) {
-            binding.addressLayout.setError("Vui lòng nhập địa chỉ");
+            binding.addressLayout.setError("Please enter your address");
             binding.addressEdt.requestFocus();
             return false;
         } else {
@@ -134,25 +128,16 @@ public class CheckoutActivity extends AppCompatActivity {
         }
 
         if (TextUtils.isEmpty(phone)) {
-            binding.phoneLayout.setError("Vui lòng nhập số điện thoại");
+            binding.phoneLayout.setError("Please enter your phone number");
             binding.phoneEdt.requestFocus();
             return false;
-        } else if (phone.length() < 10) { // Kiểm tra SĐT cơ bản
-            binding.phoneLayout.setError("Số điện thoại không hợp lệ");
+        } else if (phone.length() < 10) {
+            binding.phoneLayout.setError("Invalid phone number");
             binding.phoneEdt.requestFocus();
             return false;
         } else {
             binding.phoneLayout.setError(null);
         }
-
-        // (Tùy chọn) Kiểm tra định dạng email nếu người dùng nhập
-        // if (!TextUtils.isEmpty(email) && !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-        //     binding.emailLayout.setError("Email không hợp lệ");
-        //     binding.emailEdt.requestFocus();
-        //     return false;
-        // } else {
-        //     binding.emailLayout.setError(null);
-        // }
 
         return true;
     }

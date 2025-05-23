@@ -23,7 +23,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mã đơn: "
+                android:text="Order Number: "
                 android:textStyle="bold"/>
 
             <TextView
@@ -42,7 +42,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ngày đặt: "
+                android:text="Order Date: "
                 android:textStyle="italic"/>
             <TextView
                 android:id="@+id/orderDateTxt"
@@ -59,7 +59,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tổng tiền: "
+                android:text="Total Amount: "
                 android:textStyle="italic"/>
             <TextView
                 android:id="@+id/orderTotalAmountTxt"
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/red"
                 android:textStyle="bold"
-                tools:text="250,000đ"/>
+                tools:text="10$"/>
         </LinearLayout>
 
         <LinearLayout
@@ -78,14 +78,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Trạng thái: "
+                android:text="Status: "
                 android:textStyle="italic"/>
             <TextView
                 android:id="@+id/orderStatusTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                tools:text="Đang xử lý"/>
+                tools:text="Processing"/>
         </LinearLayout>
 
         <TextView
@@ -93,7 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            tools:text="Pizza Hải Sản x1, Coca Cola x2, Gà Rán x3"
+            tools:text="Seafood Pizza x1, Coca Cola x2, Fried Chicken x3"
             android:maxLines="2"
             android:ellipsize="end"/>
     </LinearLayout>

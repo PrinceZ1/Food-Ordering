@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-// import java.util.regex.Pattern; // Bỏ comment nếu dùng regex phức tạp
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -58,7 +57,7 @@ public class ProfileActivity extends AppCompatActivity {
         currentUser = mAuth.getCurrentUser();
 
         if (currentUser == null) {
-            Toast.makeText(this, "Người dùng chưa đăng nhập.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "User not logged in.", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -75,7 +74,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void setupRecyclerView() {
         orderList = new ArrayList<>();
-        orderHistoryAdapter = new OrderHistoryAdapter(orderList); // Adapter sẽ được cập nhật ở bước sau
+        orderHistoryAdapter = new OrderHistoryAdapter(orderList);
         binding.ordersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.ordersRecyclerView.setAdapter(orderHistoryAdapter);
         binding.ordersRecyclerView.setNestedScrollingEnabled(false);
@@ -86,7 +85,7 @@ public class ProfileActivity extends AppCompatActivity {
         if (currentUser.getDisplayName() != null && !currentUser.getDisplayName().isEmpty()) {
             binding.profileNameEdt.setText(currentUser.getDisplayName());
         } else {
-            binding.profileNameEdt.setText("Chưa cập nhật");
+            binding.profileNameEdt.setText("Not updated yet");
         }
 
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -114,7 +113,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(ProfileActivity.this, "Lỗi tải thông tin: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this, "Error loading information:" + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -125,30 +124,26 @@ public class ProfileActivity extends AppCompatActivity {
         String address = binding.profileAddressEdt.getText().toString().trim();
 
         if (name.isEmpty()) {
-            binding.profileNameLayout.setError("Tên không được để trống");
+            binding.profileNameLayout.setError("Name cannot be empty");
             binding.profileNameEdt.requestFocus();
             return;
         } else {
             binding.profileNameLayout.setError(null);
         }
 
-        // --- BẮT ĐẦU RÀNG BUỘC SỐ ĐIỆN THOẠI ---
         if (TextUtils.isEmpty(phone)) {
-            binding.profilePhoneLayout.setError("Số điện thoại không được để trống");
+            binding.profilePhoneLayout.setError("Phone number cannot be empty");
             binding.profilePhoneEdt.requestFocus();
             return;
         } else if (!isValidVietnamesePhoneNumber(phone)) {
-            binding.profilePhoneLayout.setError("SĐT không hợp lệ (phải là 10 số, bắt đầu bằng 0)");
+            binding.profilePhoneLayout.setError("Invalid phone number (must be 10 digits, starting with 0)");
             binding.profilePhoneEdt.requestFocus();
             return;
         } else {
             binding.profilePhoneLayout.setError(null);
         }
-        // --- KẾT THÚC RÀNG BUỘC SỐ ĐIỆN THOẠI ---
-
-        // (Tùy chọn) Thêm ràng buộc cho địa chỉ nếu cần
         if (address.isEmpty()) {
-            binding.profileAddressLayout.setError("Địa chỉ không được để trống");
+            binding.profileAddressLayout.setError("Address cannot be empty");
             binding.profileAddressEdt.requestFocus();
             return;
         } else {
@@ -163,29 +158,20 @@ public class ProfileActivity extends AppCompatActivity {
 
         userRef.updateChildren(userUpdates)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(ProfileActivity.this, "Cập nhật thông tin thành công!", Toast.LENGTH_SHORT).show();
-                    // --- BẮT ĐẦU CHUYỂN VỀ MAINACTIVITY ---
+                    Toast.makeText(ProfileActivity.this, "Information updated successfully!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-                    finish(); // Đóng ProfileActivity
-                    // --- KẾT THÚC CHUYỂN VỀ MAINACTIVITY ---
+                    finish();
                 })
-                .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Cập nhật thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(ProfileActivity.this, "Update failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
-    // Hàm kiểm tra SĐT Việt Nam
     private boolean isValidVietnamesePhoneNumber(String phone) {
         if (phone == null) {
             return false;
         }
-        // Kiểm tra xem có phải tất cả là số và dài 10 ký tự, bắt đầu bằng 0
         return phone.matches("^0\\d{9}$");
-
-        // Nếu muốn dùng regex phức tạp hơn cho các đầu số cụ thể:
-        // String phoneRegex = "^(0)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$";
-        // Pattern pattern = Pattern.compile(phoneRegex);
-        // return pattern.matcher(phone).matches();
     }
 
 
@@ -217,7 +203,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 binding.progressBarOrders.setVisibility(View.GONE);
-                Toast.makeText(ProfileActivity.this, "Lỗi tải lịch sử đơn hàng: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this, "Error loading order history: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "loadOrderHistory:onCancelled", databaseError.toException());
             }
         });

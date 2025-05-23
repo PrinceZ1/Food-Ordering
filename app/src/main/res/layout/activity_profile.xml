@@ -17,7 +17,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:title="Thông tin cá nhân" />
+            app:title="Personal Information" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -35,7 +35,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Thông tin tài khoản"
+                android:text="Account Information"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
@@ -51,7 +51,7 @@
                     android:id="@+id/profileNameEdt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Họ và Tên"
+                    android:hint="Full Name"
                     android:inputType="textPersonName" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -83,7 +83,7 @@
                     android:id="@+id/profilePhoneEdt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Số điện thoại"
+                    android:hint="Phone Number"
                     android:inputType="phone" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -98,7 +98,7 @@
                     android:id="@+id/profileAddressEdt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Địa chỉ"
+                    android:hint="Address"
                     android:inputType="textPostalAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -109,14 +109,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/red_button_background"
-                android:text="Cập nhật thông tin"
+                android:text="Update Information"
                 android:textColor="@color/white"
                 android:layout_marginBottom="24dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lịch sử đơn hàng"
+                android:text="Order History"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>

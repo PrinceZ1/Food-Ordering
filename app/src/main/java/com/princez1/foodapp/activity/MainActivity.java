@@ -79,46 +79,46 @@ public class MainActivity extends BaseActivity {
         initBestFood();
         initCategory();
         setVariable();
-        binding.locationSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Location selected = (Location) parent.getItemAtPosition(position);
-                selectedLocationId = selected.getId();
-                filterFoods();
-            }
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
-        });
-
-        binding.timeSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Time selected = (Time) parent.getItemAtPosition(position);
-                selectedTimeId = selected.getId();
-                filterFoods();
-            }
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
-        });
-
-        binding.priceSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Price selected = (Price) parent.getItemAtPosition(position);
-                selectedPriceId = selected.getId();
-                filterFoods();
-            }
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
-        });
+//        binding.locationSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                Location selected = (Location) parent.getItemAtPosition(position);
+//                selectedLocationId = selected.getId();
+//                filterFoods();
+//            }
+//            @Override public void onNothingSelected(AdapterView<?> parent) {}
+//        });
+//
+//        binding.timeSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                Time selected = (Time) parent.getItemAtPosition(position);
+//                selectedTimeId = selected.getId();
+//                filterFoods();
+//            }
+//            @Override public void onNothingSelected(AdapterView<?> parent) {}
+//        });
+//
+//        binding.priceSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                Price selected = (Price) parent.getItemAtPosition(position);
+//                selectedPriceId = selected.getId();
+//                filterFoods();
+//            }
+//            @Override public void onNothingSelected(AdapterView<?> parent) {}
+//        });
     }
 
-    private void filterFoods() {
-        Intent intent = new Intent(MainActivity.this, ListFoodsActivity.class);
-        intent.putExtra("filter", true);
-        intent.putExtra("LocationId", selectedLocationId);
-        intent.putExtra("TimeId", selectedTimeId);
-        intent.putExtra("PriceId", selectedPriceId);
-        intent.putExtra("CategoryName", "Filtered Foods");
-        startActivity(intent);
-    }
+//    private void filterFoods() {
+//        Intent intent = new Intent(MainActivity.this, ListFoodsActivity.class);
+//        intent.putExtra("filter", true);
+//        intent.putExtra("LocationId", selectedLocationId);
+//        intent.putExtra("TimeId", selectedTimeId);
+//        intent.putExtra("PriceId", selectedPriceId);
+//        intent.putExtra("CategoryName", "Filtered Foods");
+//        startActivity(intent);
+//    }
     private void loadUserName() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {

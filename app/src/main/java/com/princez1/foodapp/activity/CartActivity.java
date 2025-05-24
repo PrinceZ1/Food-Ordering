@@ -45,9 +45,9 @@ public class CartActivity extends BaseActivity {
         }
     }
     private static final List<CouponRule> COUPON_RULES = Arrays.asList(
-            new CouponRule("WELCOME10", 20, 0.10, 50),
-            new CouponRule("SAVE20", 50, 0.20, 100),
-            new CouponRule("VIP30", 100, 0.30, 150)
+            new CouponRule("WELCOME10", 20, 0.10, 10),
+            new CouponRule("SAVE20", 50, 0.20, 20),
+            new CouponRule("VIP30", 100, 0.30, 50)
     );
 
     private double totalAmountFromCartScreen; 
@@ -60,11 +60,9 @@ public class CartActivity extends BaseActivity {
 
 
         managementCart = new ManagmentCart(this);
-        calculateCart();
 
         setVariable();
         calculateCart();
-
         initList();
     }
 
@@ -87,7 +85,6 @@ public class CartActivity extends BaseActivity {
         binding.deliveryTxt.setText("$" + delivery);
         binding.totalTxt.setText("$" + total);
 
-        // Lưu lại tổng tiền cuối cùng từ màn hình giỏ hàng
         totalAmountFromCartScreen = total;
     }
 

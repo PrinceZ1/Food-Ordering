@@ -16,18 +16,15 @@ import com.princez1.foodapp.databinding.ActivityCheckoutBinding;
 import com.princez1.foodapp.helper.ManagmentCart;
 import com.princez1.foodapp.domain.Foods;
 import com.princez1.foodapp.domain.Order;
-import com.princez1.foodapp.activity.CartActivity;
-import java.util.ArrayList; // Nếu chưa có
-import java.util.UUID;
+import java.util.ArrayList;
 
 public class CheckoutActivity extends AppCompatActivity {
 
     private ActivityCheckoutBinding binding;
     private ManagmentCart managmentCart;
     private FirebaseAuth mAuth;
-    private double tax;
-
     private DatabaseReference ordersRef;
+    private double finalAmountFromIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +36,7 @@ public class CheckoutActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         ordersRef = FirebaseDatabase.getInstance().getReference("Orders");
 
+        finalAmountFromIntent = getIntent().getDoubleExtra("finalOrderAmount", 0.0);
 
         loadUserProfile();
 
@@ -62,16 +60,13 @@ public class CheckoutActivity extends AppCompatActivity {
                         String email = binding.emailEdt.getText().toString().trim();
                         String note = binding.noteEdt.getText().toString().trim();
                         ArrayList<Foods> cartItems = managmentCart.getListCart();
-                        double percentTax = 0.02;
-                        double delivery = 10;
 
-                        tax = Math.round(managmentCart.getTotalFee() * percentTax * 100.0) /100;
-                        double totalAmount = Math.round((managmentCart.getTotalFee() + tax + delivery) * 100) / 100;
+                        double orderTotalAmount = finalAmountFromIntent;
 
                         long orderDateTimestamp = System.currentTimeMillis();
                         String status = "Pending";
 
-                        Order newOrder = new Order(orderId, userId, name, address, phone, email, note, cartItems, totalAmount, orderDateTimestamp, status);
+                        Order newOrder = new Order(orderId, userId, name, address, phone, email, note, cartItems, orderTotalAmount, orderDateTimestamp, status);
 
                         ordersRef.child(userId).child(orderId).setValue(newOrder)
                                 .addOnSuccessListener(aVoid -> {

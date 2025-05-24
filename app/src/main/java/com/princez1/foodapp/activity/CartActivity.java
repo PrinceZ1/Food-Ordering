@@ -145,7 +145,6 @@ public class CartActivity extends BaseActivity {
         adapter = new CartAdapter(managementCart.getListCart(), this, () -> calculateCart());
         binding.cartView.setAdapter(adapter);
 
-        // THÊM SỰ KIỆN CLICK CHO NÚT CHECKOUT
         binding.checkOutBtn.setOnClickListener(v -> {
             if (managementCart.getListCart().isEmpty()) {
                 Toast.makeText(CartActivity.this, "Giỏ hàng của bạn đang trống!", Toast.LENGTH_SHORT).show();

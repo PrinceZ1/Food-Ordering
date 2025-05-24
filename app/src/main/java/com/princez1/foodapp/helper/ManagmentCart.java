@@ -29,7 +29,9 @@ public class ManagmentCart {
             }
         }
         if(existAlready){
-            listpop.get(n).setNumberInCart(item.getNumberInCart());
+            Foods itemInCart = listpop.get(n);
+            int newQuantity = itemInCart.getNumberInCart() + item.getNumberInCart();
+            itemInCart.setNumberInCart(newQuantity);
         }else{
             listpop.add(item);
         }

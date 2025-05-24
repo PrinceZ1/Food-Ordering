@@ -23,7 +23,6 @@ import java.util.Locale;
 public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapter.ViewHolder> {
 
     private ArrayList<Order> items;
-    private Context context; // context có thể không cần thiết nếu không dùng đến Glide hoặc các thư viện cần context ở đây
 
     public OrderHistoryAdapter(ArrayList<Order> items) {
         this.items = items;
@@ -32,7 +31,6 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // context = parent.getContext(); // Gán context nếu cần
         View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_order_item, parent, false);
         return new ViewHolder(inflate);
     }
@@ -51,20 +49,15 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
         holder.orderDateTxt.setText(sdf.format(new Date(order.getOrderDateTimestamp())));
 
-        // --- BẮT ĐẦU THAY ĐỔI ĐỊNH DẠNG TIỀN TỆ ---
         // Sử dụng DecimalFormat để hiển thị ký hiệu $ và định dạng số
-        // Bạn có thể chọn có hoặc không có phần thập phân tùy ý
         DecimalFormat dollarFormatter = new DecimalFormat("$#,##0.00"); // Ví dụ: $1,250.50
-        // Hoặc nếu không muốn phần thập phân:
-        // DecimalFormat dollarFormatter = new DecimalFormat("$#,##0"); // Ví dụ: $1,250
         holder.orderTotalAmountTxt.setText(dollarFormatter.format(order.getTotalAmount()));
-        // --- KẾT THÚC THAY ĐỔI ĐỊNH DẠNG TIỀN TỆ ---
 
         StringBuilder itemsString = new StringBuilder();
         if (order.getItems() != null) {
             for (int i = 0; i < order.getItems().size(); i++) {
                 Foods food = order.getItems().get(i);
-                if (food != null && food.getTitle() != null) { // Thêm kiểm tra null
+                if (food != null && food.getTitle() != null) {
                     itemsString.append(food.getTitle()).append(" x").append(food.getNumberInCart());
                     if (i < order.getItems().size() - 1) {
                         itemsString.append(", ");
@@ -91,15 +84,5 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
             orderStatusTxt = itemView.findViewById(R.id.orderStatusTxt);
             orderItemsTxt = itemView.findViewById(R.id.orderItemsTxt);
         }
-    }
-
-    // Phương thức này không còn cần thiết nếu bạn clear và addAll trực tiếp trong loadOrderHistory
-    // Hoặc bạn có thể giữ lại nếu muốn cập nhật từ nơi khác
-    public void updateOrders(ArrayList<Order> newOrders) {
-        this.items.clear();
-        if (newOrders != null) { // Thêm kiểm tra null
-            this.items.addAll(newOrders);
-        }
-        notifyDataSetChanged();
     }
 }

@@ -32,9 +32,7 @@
                     if (task.isSuccessful()) {
                         Log.i(TAG, "createUserWithEmail:success");
                         Toast.makeText(SignupActivity.this, "Signup Successful. Please Login.", Toast.LENGTH_SHORT).show();
-                        // Chuyển người dùng đến MainActivity hoặc LoginActivity sau khi đăng ký thành công
-                        // Ví dụ: Chuyển đến LoginActivity để họ đăng nhập lại
-                        Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                        Intent intent = new Intent(SignupActivity.this, LoginActivity.class);// chuyển đến màn hình đăng nhập
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Xóa stack activity trước đó
                         startActivity(intent);
                         finish(); // Đóng SignupActivity

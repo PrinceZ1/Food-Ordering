@@ -1,8 +1,8 @@
 package com.princez1.foodapp.activity;
 
-import android.content.Intent; // Thêm import này
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils; // Thêm import này
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,42 +31,48 @@ import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private ActivityProfileBinding binding;
-    private FirebaseAuth mAuth;
-    private DatabaseReference userRef;
-    private DatabaseReference ordersRef;
-    private FirebaseUser currentUser;
-    private OrderHistoryAdapter orderHistoryAdapter;
-    private ArrayList<Order> orderList;
+    private ActivityProfileBinding binding;// khai báo binding
+    private FirebaseAuth mAuth;// khai báo mAuth là FirebaseAuth
+    private DatabaseReference userRef;// tham chiếu đến node Users trong Firebase Realtime Database
+    private DatabaseReference ordersRef;// tham chiếu đến node Orders trong Firebase Realtime Database
+    private FirebaseUser currentUser;// người dùng hiện tại
+    private OrderHistoryAdapter orderHistoryAdapter;// adapter cho RecyclerView
+    private ArrayList<Order> orderList;// danh sách chứa các đối tượng Order
 
     private static final String TAG = "ProfileActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // thiết lập giao diện
         binding = ActivityProfileBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        // thiết lập toolbar
         setSupportActionBar(binding.toolbarProfile);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);// hiển thị nút back
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
+        // kiểm tra người dùng đã đăng nhập hay chưa
         if (currentUser == null) {
             Toast.makeText(this, "User not logged in.", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
+        // lấy tham chiếu đến node Users và Orders trong Firebase Realtime Database
         userRef = FirebaseDatabase.getInstance().getReference("Users").child(currentUser.getUid());
         ordersRef = FirebaseDatabase.getInstance().getReference("Orders").child(currentUser.getUid());
 
+        // thiết lập RecyclerView
         setupRecyclerView();
+        // tải thông tin người dùng
         loadUserProfile();
+        // tải lịch sử đơn hàng
         loadOrderHistory();
 
         binding.updateProfileBtn.setOnClickListener(v -> updateUserProfile());

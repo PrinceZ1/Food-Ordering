@@ -14,11 +14,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.princez1.foodapp.databinding.ActivityCheckoutBinding;
 import com.princez1.foodapp.helper.ManagmentCart;
-import com.princez1.foodapp.domain.Foods; // Nếu chưa có
-import com.princez1.foodapp.domain.Order; // Import lớp Order vừa tạo
+import com.princez1.foodapp.domain.Foods;
+import com.princez1.foodapp.domain.Order;
 import com.princez1.foodapp.activity.CartActivity;
 import java.util.ArrayList; // Nếu chưa có
-import java.util.UUID; // Để tạo ID đơn hàng ngẫu nhiên
+import java.util.UUID;
 
 public class CheckoutActivity extends AppCompatActivity {
 
@@ -27,7 +27,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private double tax;
 
-    private DatabaseReference ordersRef; // Thêm dòng này
+    private DatabaseReference ordersRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

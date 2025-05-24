@@ -42,9 +42,9 @@ import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity {
     private ActivityMainBinding binding;
-    int selectedLocationId = -1;
-    int selectedTimeId = -1;
-    int selectedPriceId = -1;
+//    int selectedLocationId = -1;
+//    int selectedTimeId = -1;
+//    int selectedPriceId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -15,7 +15,8 @@ public class LoginActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         setVariable();
-        // Nếu có nút "Sign Up" trên màn hình Login
+
+        // thêm event cho nút sigup
         binding.signupBtn.setOnClickListener(v -> {
             startActivity(new Intent(LoginActivity.this, SignupActivity.class));
         });
@@ -24,7 +25,7 @@ public class LoginActivity extends BaseActivity {
     private void setVariable() {
         binding.loginBtn.setOnClickListener(v -> {
             String email=binding.userEdt.getText().toString().trim();
-            String password=binding.userEdt.getText().toString().trim();
+            String password=binding.passEdt.getText().toString().trim();
             if(!email.isEmpty() && !password.isEmpty()){
                 mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(LoginActivity.this, task -> {
                     if(task.isSuccessful()){

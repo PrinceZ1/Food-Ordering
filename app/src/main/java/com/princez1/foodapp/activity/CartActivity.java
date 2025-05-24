@@ -80,10 +80,10 @@ public class CartActivity extends BaseActivity {
         if (discountedSubtotal < 0) discountedSubtotal = 0;
         double total = Math.round((discountedSubtotal + delivery) * 100) / 100.0;
 
-        binding.totalFeeTxt.setText("$" + subtotal);
-        binding.discountTxt.setText("$" + discount);
-        binding.deliveryTxt.setText("$" + delivery);
-        binding.totalTxt.setText("$" + total);
+        binding.totalFeeTxt.setText("$" + String.format("%.2f", subtotal));
+        binding.discountTxt.setText("$" + String.format("%.2f", discount));
+        binding.deliveryTxt.setText("$" + String.format("%.2f", delivery));
+        binding.totalTxt.setText("$" + String.format("%.2f", total));
 
         totalAmountFromCartScreen = total;
     }
